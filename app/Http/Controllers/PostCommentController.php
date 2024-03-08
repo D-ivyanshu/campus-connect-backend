@@ -43,8 +43,7 @@ class PostCommentController extends Controller
 
         $comment->update($data);
 
-        // what should I return here ?? 
-        return new CommentCollection($post->comments);
+        return response()->json(['message' => 'Comment updated successfully'], 200);
     }
 
     /**
