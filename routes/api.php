@@ -28,7 +28,7 @@ Route::post('logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function () {
     
     Route::apiResources([
-        'post' => PostController::class,
-        'post/{post}/comment' => PostCommentController::class
+        'posts' => PostController::class,
+        'posts/{post}/comment' => PostCommentController::class
     ]);
 });

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Stevebauman\Purify\Casts\PurifyHtmlOnGet;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
@@ -19,5 +20,9 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class)->whereNull('parent_id');
     }
+
+    protected $casts = [
+        'body' => PurifyHtmlOnGet::class,
+    ];
 
 }
