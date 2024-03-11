@@ -43,7 +43,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function followings()
+    public function following()
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'user_id');
     }
