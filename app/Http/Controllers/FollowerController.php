@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class FollowerController extends Controller
 {
+
+    // follows a user with $user->id we are the auth()->user()
     public function follow(User $user) {
         $follower = auth()->user();
         
@@ -56,6 +58,5 @@ class FollowerController extends Controller
 
         return response()->json(['message' => 'You are not following this user'], 404);
     }
-    
 
 }

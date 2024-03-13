@@ -25,7 +25,7 @@ class PostController extends Controller
     {
         
         $data = request()->validate([
-            'body' => '',
+            'body' => 'required|string',
         ]);
 
         $post = request()->user()->posts()->create($data);
@@ -45,8 +45,13 @@ class PostController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Post $post)
-    {
-        //
+    { 
+        $data = request()->validate([
+            'body' => 'required|string',
+        ]);
+
+        $post->update($data);
+        return new PostResource($post);
     }
 
     /**
@@ -54,6 +59,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return response()->json(['message' => 'Post deleted successfully']);
     }
-}
+} 

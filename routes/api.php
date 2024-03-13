@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
@@ -29,10 +30,12 @@ Route::post('logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResources([
         'posts' => PostController::class,
+        'user' => UserProfileController::class,
         'posts/{post}/comment' => PostCommentController::class
     ]);
 
     Route::prefix('/user')->group(function () {
+        Route::post('/{user}', [UserProfileController::class, 'updateUserProfile']);
         Route::put('/following/{user}', [FollowerController::class, 'follow']);
         Route::delete('/following/{user}', [FollowerController::class, 'unfollow']);
         Route::get('/followers', [FollowerController::class, 'followers']);

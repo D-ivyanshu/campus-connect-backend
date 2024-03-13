@@ -20,6 +20,9 @@ class UserResource extends JsonResource
                 'user_id' => $this->id,
                 'attributes' => [
                     'name' => $this->name,
+                    'avatar' => $this->avatar, 
+                    'followers_count' => $this->followers()->count(),
+                    'following_count' => $this->following()->count(),
                 ]
             ],
         ];

@@ -32,25 +32,29 @@ class PostCommentController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Post $post, Comment $comment)
-    {
+    {   
+        if ($comment->user_id !== auth()->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    
         $data = $request->validate([
             'body' => 'required',
         ]);
 
-        if ($comment->user_id !== auth()->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $comment->update($data);
-
         return response()->json(['message' => 'Comment updated successfully'], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post, Comment $comment)
     {
-        //
+        if ($comment->user_id !== auth()->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $comment->delete();
+        return response()->json(['message' => 'Comment deleted successfully'], 200);
     }
 }
