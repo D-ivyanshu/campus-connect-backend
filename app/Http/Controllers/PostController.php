@@ -14,7 +14,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('comments')->get();
+        $posts = Post::with('comments')->latest()->get();
         return new PostCollection($posts);
     }
 
