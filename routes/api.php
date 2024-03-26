@@ -28,20 +28,22 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResources([
-        'posts' => PostController::class,
-        'user' => UserProfileController::class,
-        'posts/{post}/comment' => PostCommentController::class
-    ]);
-
+    
     Route::prefix('/user')->group(function () {
+        Route::get('/{user}', [UserProfileController::class, 'show']);
+        Route::get('/{user_id}/posts', [PostController::class, 'userPost']);
         Route::post('/{user}', [UserProfileController::class, 'updateUserProfile']);
         Route::put('/following/{user}', [FollowerController::class, 'follow']);
         Route::delete('/following/{user}', [FollowerController::class, 'unfollow']);
-        Route::get('/followers', [FollowerController::class, 'followers']);
-        Route::get('/following', [FollowerController::class, 'following']);
-        Route::get('/following/{user}', [FollowerController::class, 'isFollowed']);
-    });
+        Route::get('/followers/{user}', [FollowerController::class, 'followers']);
+        Route::get('/following/{user}', [FollowerController::class, 'following']);
+        Route::get('/isfollowing/{user}', [FollowerController::class, 'isFollowed']);
+    }); 
+    
+    Route::apiResources([
+        'posts' => PostController::class,
+        'posts/{post}/comment' => PostCommentController::class
+    ]);
 });
 
  

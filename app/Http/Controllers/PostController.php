@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostCollection;
@@ -41,6 +42,13 @@ class PostController extends Controller
     {
         $post = Post::with('comments')->find($post->id);
         return new PostResource($post);
+    }
+
+    public function userPost(string $user_id) {
+        $user = User::findOrFail($user_id);
+        $posts = $user->posts()->latest()->get();
+        // return response()->json($posts);
+        return new PostCollection($posts);
     }
 
     /**
