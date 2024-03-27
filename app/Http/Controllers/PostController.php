@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostCollection;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class PostController extends Controller
 {
@@ -24,23 +26,51 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        
-        $data = request()->validate([
-            'body' => 'required|string',
-        ]);
+    // public function store(Request $request)
+    // {
 
-        $post = request()->user()->posts()->create($data);
+    //     $data = $request->except(['file']);
+    //     $uploadedFileUrl = cloudinary()->uploadFile($request->file('file')->getRealPath())->getSecurePath();
+    //     return $uploadedFileUrl;
+        
+    //     // $post = request()->user()->posts()->create($data);
+    //     // return new PostResource($post);
+    // }
+    
+    public function store(Request $request){
+
+        $uploadedFiles = [];
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $uploadedFileUrl = cloudinary()->uploadFile($file->getRealPath())->getSecurePath();
+                $uploadedFiles[] = [
+                    'file_url' => $uploadedFileUrl,
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_type' => $file->getClientMimeType(),
+                    'size' => $file->getSize()
+                ];
+            }
+        }
+    
+        $postData = $request->except(['media']);
+        $post = request()->user()->posts()->create($postData);
+        
+        foreach ($uploadedFiles as $fileData) {
+            $media = new Media($fileData);
+            $media->medially()->associate($post);
+            $media->save();
+        }
+        
         return new PostResource($post);
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Post $post)
     {
-        $post = Post::with('comments')->find($post->id);
+        $post = Post::with(['comments', 'media'])->find($post->id);
         return new PostResource($post);
     }
 
