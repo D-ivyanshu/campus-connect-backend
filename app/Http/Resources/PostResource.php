@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\MediaCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
@@ -23,7 +24,8 @@ class PostResource extends JsonResource
                     'posted_by' => new UserResource($this->user),
                     'comments' => new CommentCollection($this->comments),
                     'body' => $this->body,
-                    'posted_at' => $this->created_at->diffForHumans()
+                    'posted_at' => $this->created_at->diffForHumans(),
+                    'media' => new MediaCollection($this-> media),
                 ]
             ],
         ];

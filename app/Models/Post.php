@@ -26,6 +26,11 @@ class Post extends Model
         return $this->hasMany(Comment::class)->whereNull('parent_id');
     }
 
+    public function media()
+    {
+        return $this->morphMany(Media::class, 'medially');
+    }
+
     protected $casts = [
         'body' => PurifyHtmlOnGet::class,
     ];
