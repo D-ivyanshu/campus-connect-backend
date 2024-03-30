@@ -40,10 +40,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/isfollowing/{user}', [FollowerController::class, 'isFollowed']);
     }); 
     
+    Route::post('posts/{post}/reaction', [PostController::class, 'postReaction']);
+    Route::post('comments/{comment}/reaction', [PostCommentController::class, 'commentReaction']);
+
+
     Route::apiResources([
         'posts' => PostController::class,
         'posts/{post}/comment' => PostCommentController::class
     ]);
+
 });
 
  

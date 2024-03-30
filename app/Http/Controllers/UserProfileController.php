@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
 {
@@ -37,6 +38,10 @@ class UserProfileController extends Controller
      */
     public function updateUserProfile(Request $request, User $user)
     {
+        $authenticated_user = Auth::id();
+        if($authenticated_user != $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $data = $request->except('avatar');
         $avatar = $request->file('avatar');
         if ($avatar) {
@@ -44,6 +49,7 @@ class UserProfileController extends Controller
             $data['avatar'] = "http://localhost:8000/storage/$avatarPath";
         }
         $user->update($data);
+
         return response()->json(['user' => $user], 201);
     }
 

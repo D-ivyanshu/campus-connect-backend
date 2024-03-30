@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('object_id');
             $table->string('type');
+            $table->unsignedBigInteger('user_id');
             $table->string('object_type');
             $table->timestamps();
         });

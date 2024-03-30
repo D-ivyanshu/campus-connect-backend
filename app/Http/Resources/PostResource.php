@@ -21,11 +21,13 @@ class PostResource extends JsonResource
                 'type' => 'posts', 
                 'post_id' => $this->id,
                 'attributes' => [
-                    'posted_by' => new UserResource($this->user),
+                    'posted_by' => new UserResource($this->user),   
                     'comments' => new CommentCollection($this->comments),
                     'body' => $this->body,
                     'posted_at' => $this->created_at->diffForHumans(),
                     'media' => new MediaCollection($this-> media),
+                    'cnt_of_reactions' => $this->reactions_count,
+                    'user_has_reaction' => $this->reactions->count() > 0
                 ]
             ],
         ];
