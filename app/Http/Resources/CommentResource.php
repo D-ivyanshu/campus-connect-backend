@@ -24,6 +24,8 @@ class CommentResource extends JsonResource
                 ],
                 'body' => $this->body,
                 'commented_at' => $this->created_at->diffForHumans(),
+                'cnt_of_reactions' => $this->reactions_count,
+                'user_has_reaction' => $this->reactions->count() > 0
             ]
         ];
     }
