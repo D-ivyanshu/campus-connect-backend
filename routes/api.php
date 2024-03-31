@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PostCommentController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Notifications\NotificationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,14 +31,21 @@ Route::post('logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function () {
     
     Route::prefix('/user')->group(function () {
+
         Route::get('/{user}', [UserProfileController::class, 'show']);
         Route::get('/{user_id}/posts', [PostController::class, 'userPost']);
         Route::post('/{user}', [UserProfileController::class, 'updateUserProfile']);
+        
+        Route::get('/{user}/notification', [NotificationsController::class, 'getLatestNotifications']);
+        Route::get('/{user}/notification/read-all', [NotificationsController::class, 'markAllNotificationRead']);
+        Route::get('/{user}/notification/{notification}/read', [NotificationsController::class, 'markNotificationRead']);
+        
         Route::put('/following/{user}', [FollowerController::class, 'follow']);
         Route::delete('/following/{user}', [FollowerController::class, 'unfollow']);
         Route::get('/followers/{user}', [FollowerController::class, 'followers']);
         Route::get('/following/{user}', [FollowerController::class, 'following']);
         Route::get('/isfollowing/{user}', [FollowerController::class, 'isFollowed']);
+        
     }); 
     
     Route::post('posts/{post}/reaction', [PostController::class, 'postReaction']);
@@ -48,7 +56,6 @@ Route::middleware('auth:sanctum')->group(function () {
         'posts' => PostController::class,
         'posts/{post}/comment' => PostCommentController::class
     ]);
-
 });
 
  

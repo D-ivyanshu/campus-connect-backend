@@ -27,6 +27,7 @@ class LoginResource extends JsonResource
                 'name' => $this->resource->name,
                 'id' => $this->resource->id,
                 'avatar' => $this->resource->profile_pic,
+                'notifications' => $this->notifications,
             ],
             'token' => $this->token,
         ];

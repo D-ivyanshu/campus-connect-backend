@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\FollowerCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\FollowerCollection;
+use App\Notifications\SendNotification;
+use Illuminate\Support\Facades\Notification;
 
 class FollowerController extends Controller
 {
@@ -22,7 +24,12 @@ class FollowerController extends Controller
         }
 
         $follower->following()->attach($user);
-        // TODO: ADD A NOTIFICATION & EMAIL SYSTEM HERE 
+
+        $title = 'started following you.';
+        $authUser = User::find(auth()->user()->id);
+        $is_following = $user->following->contains($authUser);
+        Notification::send($user, new SendNotification('follow', $title,[], $authUser, $is_following));
+        
         return response()->json(['message' => 'Followed Successfully'], 200);
     }
 
@@ -34,7 +41,13 @@ class FollowerController extends Controller
         }
 
         $follower->following()->detach($user);
-        // TODO: ADD A NOTIFICATION & EMAIL SYSTEM HERE 
+
+        $title = 'is no longer following you.';
+        $authUser = User::find(auth()->user()->id);
+        $is_following = $user->following->contains($authUser);
+        Notification::send($user, new SendNotification('follow', $title, [], $authUser, $is_following));
+        
+
         return response()->json(['message' => 'Unfollowed Successfully'], 200);
     }
 

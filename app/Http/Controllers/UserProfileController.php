@@ -60,4 +60,5 @@ class UserProfileController extends Controller
     {
         //
     }
+    
 }
