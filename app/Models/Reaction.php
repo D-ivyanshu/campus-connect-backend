@@ -17,3 +17,4 @@ class Reaction extends Model
         return $this->morphTo();
     }
 }
+ 

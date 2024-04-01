@@ -37,7 +37,7 @@ class PostCommentController extends Controller
 
         $user = User::find($post->user_id);
         $title = 'commented on your post';
-        Notification::send($post_user, new SendNotification('comment', $title, $post, $user, false));
+        Notification::send($user, new SendNotification('comment', $title, $post, $post_user, false));
         return new CommentCollection($post->comments);
     }
 

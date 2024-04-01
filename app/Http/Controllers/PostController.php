@@ -110,6 +110,10 @@ class PostController extends Controller
         //     $query->where('user_id', $userId);
         // }])->find($post->id);
 
+        // post -> reactions 
+    
+        //  comments -> reactions
+
         $post = Post::withCount('reactions')
         ->withCount('comments')
         ->with([
