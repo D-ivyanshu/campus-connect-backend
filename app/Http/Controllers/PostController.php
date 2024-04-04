@@ -12,6 +12,8 @@ use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Enums\ObjectReactionEnum;
 use App\Http\Resources\PostCollection;
+use App\Notifications\SendNotification;
+use Illuminate\Support\Facades\Notification;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class PostController extends Controller
@@ -108,6 +110,10 @@ class PostController extends Controller
         //     $query->where('user_id', $userId);
         // }])->find($post->id);
 
+        // post -> reactions 
+    
+        //  comments -> reactions
+
         $post = Post::withCount('reactions')
         ->withCount('comments')
         ->with([
@@ -132,8 +138,21 @@ class PostController extends Controller
 
     public function userPost(string $user_id) {
         $user = User::findOrFail($user_id);
-        $posts = $user->posts()->latest()->get();
-        // return response()->json($posts);
+        
+        $posts = Post::withCount('reactions', 'comments')
+        ->with([
+            'comments' => function ($query) use ($user_id) {
+                $query->withCount('reactions')
+                    ->where('user_id', $user_id);
+            },
+            'reactions' => function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            }
+        ])
+        ->where('user_id', $user_id)
+        ->latest()
+        ->get();
+
         return new PostCollection($posts);
     }
 
@@ -166,8 +185,10 @@ class PostController extends Controller
         ]);
 
         $userId = Auth::id();
-        $reaction = Reaction::where('user_id', $userId)->where('object_id', $post->id)->where('object_type', Post::class)->first();
+        $userLiked = User::find($userId);
 
+        $reaction = Reaction::where('user_id', $userId)->where('object_id', $post->id)->where('object_type', Post::class)->first();
+        
         if($reaction) {
             $hasReaction = false;
             $reaction->delete();
@@ -177,9 +198,12 @@ class PostController extends Controller
             Reaction::create([
                 'object_id' => $post->id,
                 'object_type' => Post::class,
-                'user_id' => Auth::id(),
+                'user_id' => $userId,
                 'type' => $data['reaction']
             ]);
+            $user = User::find($post->user_id);
+            $title = 'liked your post';
+            Notification::send($user, new SendNotification('like', $title, $post, $userLiked, false));
         }
 
         $reactions = Reaction::where('object_id', $post->id)->where('object_type', Post::class)->count();

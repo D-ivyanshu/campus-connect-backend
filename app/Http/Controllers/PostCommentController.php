@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Comment;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Enums\ObjectReactionEnum;
+use App\Notifications\SendNotification;
 use App\Http\Resources\CommentCollection;
+use Illuminate\Support\Facades\Notification;
 
 class PostCommentController extends Controller
 { 
@@ -29,6 +32,13 @@ class PostCommentController extends Controller
             ]
         ));
 
+        $post_user_id = auth()->user()->id;
+        $post_user = User::find($post_user_id);
+
+        $user = User::find($post->user_id);
+        $title = 'commented on your post';
+        // FIXME: check if the user has opt for the notfications
+        Notification::send($user, new SendNotification('comment', $title, $post, $post_user, false));
         return new CommentCollection($post->comments);
     }
 

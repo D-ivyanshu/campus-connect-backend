@@ -22,13 +22,25 @@ class LoginResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => [
-                'email' => $this->resource->email,
-                'name' => $this->resource->name,
-                'id' => $this->resource->id,
-                'avatar' => $this->resource->profile_pic,
+            'data'  => [
+                'type' => 'users', 
+                'user_id' => $this->id,
+                'attributes' => [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'year' => $this->year,
+                    'avatar' => $this->avatar, 
+                    'banner' => $this->banner,
+                    'course' => $this->course,
+                    'about' => $this->about,
+                    'branch' => $this->branch,
+                    'social_links' => $this->social_links,
+                    'notifications_configuration' => $this->notifications_configuration,
+                    'email_verified_at' => $this->email_verified_at
+                ],
+                'token' => $this->token,
             ],
-            'token' => $this->token,
+          
         ];
     }
 }

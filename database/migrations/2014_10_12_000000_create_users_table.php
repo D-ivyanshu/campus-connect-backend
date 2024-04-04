@@ -16,13 +16,30 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('about')->nullable();
-            $table->string('branch')->nullable();
+            $table->string('course')->nullable();
             $table->string('year')->nullable();
-            $table->string('avatar')->nullable();
+            $table->string('branch')->nullable();
+            
+            $table->json('social_links')->nullable();
+            $table->json('notifications_configuration')->nullable();
+            // $table->string('facebook_link')->nullable();
+            // $table->string('instagram_link')->nullable();
+            // $table->string('linkedin_link')->nullable();
+            // $table->string('twitter_link')->nullable();
+
+            // $table->string('like_notification')->nullable();
+            // $table->string('comment_notification')->nullable();
+            // $table->string('follow_notification')->nullable();
+
+            
+
+            $table->string('avatar')->nullable()->default('https://res.cloudinary.com/duwukinfy/image/upload/v1712040648/wcnopwl0tepuzcsdnfr9.jpg');
+            $table->string('banner')->nullable()->default('https://res.cloudinary.com/duwukinfy/image/upload/v1712140547/cmrqynqsd7y9nnazkp8h.jpg');
+
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamps(); 
         });
     }
 

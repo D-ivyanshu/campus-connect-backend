@@ -42,15 +42,29 @@ class UserProfileController extends Controller
         if($authenticated_user != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $data = $request->except('avatar');
-        $avatar = $request->file('avatar');
-        if ($avatar) {
-            $avatarPath = $avatar->store('avatar', 'public');
-            $data['avatar'] = "http://localhost:8000/storage/$avatarPath";
-        }
-        $user->update($data);
 
-        return response()->json(['user' => $user], 201);
+        $data = $request->validate([
+            'about' => 'string',
+            'avatar' => 'required|string',
+            'branch' => 'string',
+            'course' => 'string',
+            'username' => 'string',
+            'year' => 'string',
+        ]);
+
+        $socialLinks = $request->only(['facebook', 'linkedin', 'instagram', 'twitter']);
+
+        $data = $request->except(['facebook', 'linkedin', 'instagram', 'twitter']);
+
+        if (!empty($socialLinks)) {
+            $updateData = array_merge($data, ['social_links' => $socialLinks]);
+        } else {
+            $updateData = $data;
+        }
+
+        $user->update($updateData);
+
+        return new UserResource($user);
     }
 
     /**
@@ -60,4 +74,24 @@ class UserProfileController extends Controller
     {
         //
     }
+    
+
+    public function uploadSingleFile(Request $request){
+ 
+        if ($request->hasFile('media')) {
+            $file = $request->file('media');
+            $uploadedFileUrl = cloudinary()->uploadFile($file->getRealPath())->getSecurePath();
+            $uploadedFiles = [
+                'file_url' => $uploadedFileUrl,
+                'file_name' => $file->getClientOriginalName(),
+                'file_type' => $file->getClientMimeType(),
+                'size' => $file->getSize()
+            ];
+        }
+    
+        return response()->json([
+            'data' => $uploadedFiles
+        ]);
+    }
+
 }
