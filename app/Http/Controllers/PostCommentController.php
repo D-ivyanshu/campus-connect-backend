@@ -37,6 +37,7 @@ class PostCommentController extends Controller
 
         $user = User::find($post->user_id);
         $title = 'commented on your post';
+        // FIXME: check if the user has opt for the notfications
         Notification::send($user, new SendNotification('comment', $title, $post, $post_user, false));
         return new CommentCollection($post->comments);
     }

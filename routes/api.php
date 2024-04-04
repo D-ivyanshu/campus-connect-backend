@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('posts/{post}/reaction', [PostController::class, 'postReaction']);
     Route::post('comments/{comment}/reaction', [PostCommentController::class, 'commentReaction']);
-
+    Route::post('/upload', [UserProfileController::class, 'uploadSingleFile']);
 
     Route::apiResources([
         'posts' => PostController::class,
