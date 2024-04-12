@@ -22,15 +22,6 @@ return new class extends Migration
             
             $table->json('social_links')->nullable();
             $table->json('notifications_configuration')->nullable();
-            // $table->string('facebook_link')->nullable();
-            // $table->string('instagram_link')->nullable();
-            // $table->string('linkedin_link')->nullable();
-            // $table->string('twitter_link')->nullable();
-
-            // $table->string('like_notification')->nullable();
-            // $table->string('comment_notification')->nullable();
-            // $table->string('follow_notification')->nullable();
-
             
 
             $table->string('avatar')->nullable()->default('https://res.cloudinary.com/duwukinfy/image/upload/v1712040648/wcnopwl0tepuzcsdnfr9.jpg');

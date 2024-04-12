@@ -2,19 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserShortDescriptionCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+{   
+
+    public function index() 
     {
-        //
+        $users = User::all();
+        return new UserShortDescriptionCollection($users);
+    }
+
+    /**
+     * Display a listing of the suggested users to follow.
+     */
+    public function getSuggestions()
+    {   
+        $currentUserId = Auth::id();
+
+        $randomUsers = User::where('id', '!=', $currentUserId) // Exclude the current user
+            ->whereDoesntHave('followers', function ($query) use ($currentUserId) {
+                $query->where('follower_id', $currentUserId);
+            })
+            ->inRandomOrder()
+            ->limit(3)
+            ->get();
+        
+        return new UserShortDescriptionCollection($randomUsers);
     }
 
     /**

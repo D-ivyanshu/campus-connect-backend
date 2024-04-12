@@ -203,7 +203,10 @@ class PostController extends Controller
             ]);
             $user = User::find($post->user_id);
             $title = 'liked your post';
-            Notification::send($user, new SendNotification('like', $title, $post, $userLiked, false));
+
+            if($userId != $user->id) {
+                Notification::send($user, new SendNotification('like', $title, $post, $userLiked, false));
+            }
         }
 
         $reactions = Reaction::where('object_id', $post->id)->where('object_type', Post::class)->count();

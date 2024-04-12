@@ -20,6 +20,10 @@ use App\Http\Controllers\Notifications\NotificationsController;
 |
 */
 
+Route::get('/test', function () {
+    return response()->json('Working fine ^_^');
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -32,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::prefix('/user')->group(function () {
 
+        Route::get('', [UserProfileController::class, 'index']);
+        Route::get('/suggestions', [UserProfileController::class, 'getSuggestions']);
         Route::get('/{user}', [UserProfileController::class, 'show']);
         Route::get('/{user_id}/posts', [PostController::class, 'userPost']);
         Route::post('/{user}', [UserProfileController::class, 'updateUserProfile']);
